@@ -1,0 +1,48 @@
+{
+    "home": {
+        "title": "Главная",
+        "blocks": [
+            {
+                "type": "hero-1",
+                "data": {
+                    "heading": "123",
+                    "description": "1312",
+                    "button_text": "123",
+                    "button_url": "321",
+                    "background_svg": "",
+                    "sub_button_text": "",
+                    "sub_button_url": ""
+                }
+            }
+        ]
+    },
+    "catalog": {
+        "title": "Каталог товаров",
+        "blocks": [
+            {
+                "type": "banner",
+                "data": {
+                    "title": "12312",
+                    "subtitle": "312",
+                    "button_text": "21321",
+                    "image": "123213"
+                }
+            }
+        ]
+    },
+    "12312": {
+        "title": "12321",
+        "blocks": []
+    },
+    "404": {
+        "title": "Страница не найдена",
+        "blocks": [
+            {
+                "type": "text",
+                "data": {
+                    "content": "Такой страницы нет"
+                }
+            }
+        ]
+    }
+}
