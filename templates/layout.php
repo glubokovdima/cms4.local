@@ -21,7 +21,7 @@ $theme = file_exists($themePath) ? json_decode(file_get_contents($themePath), tr
         <div class="text-xl font-bold text-indigo-700">Мой сайт</div>
         <nav class="space-x-6">
             <a href="/" class="<?= $pageSlug === 'home' ? 'font-bold text-indigo-600' : 'text-gray-700 hover:text-indigo-500' ?>">Главная</a>
-            <a href="/catalog" class="<?= $pageSlug === 'catalog' ? 'font-bold text-indigo-600' : 'text-gray-700 hover:text-indigo-500' ?>">Каталог</a>
+            <a href="../index.php" class="<?= $pageSlug === 'catalog' ? 'font-bold text-indigo-600' : 'text-gray-700 hover:text-indigo-500' ?>">Каталог</a>
         </nav>
     </div>
 </header>

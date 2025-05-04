@@ -28,7 +28,7 @@ $maxWidth = $theme['maxWidth'] ?? 'max-w-7xl';
     <nav class="space-x-4 text-blue-600 text-sm">
         <a href="/admin/index.php" class="hover:underline">Страницы</a>
         <a href="/admin/products.php" class="hover:underline">Товары</a>
-        <a href="/admin/theme.php" class="hover:underline">Тема</a>
+        <a href="theme-admin.php" class="hover:underline">Тема</a>
         <a href="/" target="_blank" class="hover:underline">↗ На сайт</a>
     </nav>
 </header>
