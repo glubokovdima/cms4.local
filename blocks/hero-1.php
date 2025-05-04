@@ -16,6 +16,7 @@ return [
                 'image' => 'Изображение (URL)'
             ]
         ],
+
         [
             'name' => 'background_svg',
             'type' => 'textarea',
@@ -30,10 +31,11 @@ return [
         ],
         [
             'name' => 'background_image',
-            'type' => 'image',
-            'label' => 'Фоновое изображение',
+            'type' => 'text',
+            'label' => 'URL фонового изображения',
             'showIf' => ['background_type' => 'image']
         ],
+
         [
             'name' => 'buttons',
             'type' => 'repeater',
@@ -61,8 +63,8 @@ return [
         if ($bgType === 'svg') {
             $background = $data['background_svg'] ?? '';
         } elseif ($bgType === 'color') {
-            $class = htmlspecialchars($data['background_color'] ?? 'bg-gray-100');
-            $background = "<div class=\"absolute inset-0 {$class}\"></div>";
+            $backgroundClass = htmlspecialchars($data['background_color'] ?? 'bg-gray-100');
+            $background = "<div class=\"absolute inset-0 {$backgroundClass}\"></div>";
         } elseif ($bgType === 'image') {
             $url = htmlspecialchars($data['background_image'] ?? '');
             $background = "<div class=\"absolute inset-0 bg-cover bg-center\" style=\"background-image: url('{$url}');\"></div>";

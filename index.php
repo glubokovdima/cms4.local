@@ -1,29 +1,14 @@
 <?php
-// index.php — основной вход в сайт (корень)
-// Старт: включаем ошибки
+// Логика + роутинг
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-// Пути
-define('BASE_PATH', __DIR__);
-define('CONFIG_PATH', BASE_PATH . '/config');
-define('BLOCKS_PATH', BASE_PATH . '/blocks');
-define('UPLOADS_PATH', BASE_PATH . '/public/uploads');
-define('ASSETS_URL', '/assets/images/');
-define('LAYOUT_FILE', BASE_PATH . '/templates/layout.php');
-
-// Загрузка страниц
-$pagesFile = CONFIG_PATH . '/pages.json';
-if (!file_exists($pagesFile)) {
-    die('❌ Файл pages.json не найден');
-}
-
+$pagesFile = 'pages.json';
 $pages = json_decode(file_get_contents($pagesFile), true);
 if (json_last_error() !== JSON_ERROR_NONE) {
     die('Ошибка JSON: ' . json_last_error_msg());
 }
 
-// Роутинг
 $path = $_GET['path'] ?? '';
 $segments = explode('/', trim($path, '/'));
 $slug = $segments[0] ?: 'home';
@@ -39,14 +24,14 @@ if ($slug === 'catalog' && $subslug) {
                 ?>
                 <div class="p-8">
                     <h1 class="text-3xl font-bold"><?= htmlspecialchars($product['title']) ?></h1>
-                    <img src="<?= ASSETS_URL . htmlspecialchars($product['image']) ?>" class="w-96 mb-4">
+                    <img src="/assets/images/<?= htmlspecialchars($product['image']) ?>" class="w-96 mb-4">
                     <p class="text-xl text-green-600"><?= htmlspecialchars($product['price']) ?></p>
                     <a href="/catalog" class="text-blue-600 hover:underline block mt-4">← Назад в каталог</a>
                 </div>
                 <?php
             }];
             $pageSlug = 'catalog';
-            include LAYOUT_FILE;
+            include 'layout.php';
             exit;
         }
     }
@@ -63,14 +48,13 @@ $title = $page['title'] ?? 'Без названия';
 $blocks = $page['blocks'] ?? [];
 $pageSlug = $slug;
 
-include LAYOUT_FILE;
+include 'layout.php';
 exit;
 
+// === Функции ===
 
-// === Вспомогательные функции ===
 function redirect404() {
-    header("HTTP/1.1 404 Not Found");
-    echo "<h1>404 — страница не найдена</h1>";
+    header("Location: /404");
     exit;
 }
 

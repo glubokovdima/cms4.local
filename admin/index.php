@@ -28,7 +28,7 @@ renderAdminLayout('Страницы', function () use ($pages, $message) {
 
     <ul class="list-disc pl-5 mb-6 space-y-1">
         <?php foreach ($pages as $slug => $page): ?>
-            <li><a href="views/page.php?slug=<?= $slug ?>" class="text-blue-600 hover:underline"><?= htmlspecialchars($page['title']) ?></a></li>
+            <li><a href="page.php?slug=<?= $slug ?>" class="text-blue-600 hover:underline"><?= htmlspecialchars($page['title']) ?></a></li>
         <?php endforeach; ?>
     </ul>
 

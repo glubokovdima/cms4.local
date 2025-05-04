@@ -1,7 +1,7 @@
 <?php
 
 function loadPages() {
-    return json_decode(file_get_contents(dirname(__DIR__, 2) . '/config/pages.json'), true);
+    return json_decode(file_get_contents(dirname(__DIR__, 2) . '/pages.json'), true);
 }
 
 function savePages($pages) {

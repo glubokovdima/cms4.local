@@ -1,11 +1,12 @@
 <?php
-require_once __DIR__ . '/functions.php';
+require_once __DIR__ . '/functions.php'; // ✅ ОБЯЗАТЕЛЬНО ПЕРВЫМ
 require_once __DIR__ . '/BlockManager.php';
 
 $type = $_POST['type'] ?? '';
 $index = (int) ($_POST['index'] ?? 0);
 
-$blockDef = BlockManager::load($type, true);
+// Было:
+$blockDef = BlockManager::load($type, true); // 👍 ты уже добавил $force = true
 
 if (!$blockDef) {
     http_response_code(400);
@@ -16,11 +17,7 @@ if (!$blockDef) {
 $data = [];
 foreach ($blockDef['fields'] ?? [] as $field) {
     $name = $field['name'];
-    if ($field['type'] === 'repeater') {
-        $data[$name] = []; // пустой массив по умолчанию
-    } else {
-        $data[$name] = '';
-    }
+    $data[$name] = '';
 }
 
 $block = [

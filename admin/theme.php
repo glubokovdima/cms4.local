@@ -3,33 +3,30 @@ require_once 'includes/functions.php';
 
 $themePath = dirname(__DIR__) . '/theme.json';
 
-// Значения по умолчанию
-$defaultTheme = [
-    'background' => 'bg-white',
-    'accent'     => 'text-indigo-600',
-    'rounded'    => '',
-    'shadow'     => '',
-    'maxWidth'   => 'max-w-7xl',
-];
-
 $theme = file_exists($themePath)
     ? json_decode(file_get_contents($themePath), true)
-    : $defaultTheme;
+    : [
+        'background' => 'bg-white',
+        'accent' => 'text-indigo-600',
+        'rounded' => '',
+        'shadow' => '',
+        'maxWidth' => 'max-w-7xl'
+    ];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $theme = [
-        'background' => trim($_POST['background'] ?? $defaultTheme['background']),
-        'accent'     => trim($_POST['accent'] ?? $defaultTheme['accent']),
-        'rounded'    => trim($_POST['rounded'] ?? $defaultTheme['rounded']),
-        'shadow'     => trim($_POST['shadow'] ?? $defaultTheme['shadow']),
-        'maxWidth'   => trim($_POST['maxWidth'] ?? $defaultTheme['maxWidth']),
+        'background' => trim($_POST['background'] ?? ''),
+        'accent' => trim($_POST['accent'] ?? ''),
+        'rounded' => trim($_POST['rounded'] ?? ''),
+        'shadow' => trim($_POST['shadow'] ?? ''),
+        'maxWidth' => trim($_POST['maxWidth'] ?? '')
     ];
 
     file_put_contents($themePath, json_encode($theme, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
     $message = '✔ Настройки темы сохранены!';
 }
 
-renderAdminLayout('Настройки темы', function () use ($theme, $message) {
+renderAdminLayout('Настройки темы (ручной ввод)', function () use ($theme, $message) {
     ?>
     <?php if (!empty($message)): ?>
         <div class="mb-4 p-3 bg-green-500 text-white rounded"><?= $message ?></div>
@@ -53,12 +50,12 @@ renderAdminLayout('Настройки темы', function () use ($theme, $messa
 
         <div>
             <label class="block font-semibold mb-1">Тень блоков (Tailwind):</label>
-            <input type="text" name="shadow" value="<?= htmlspecialchars($theme['shadow']) ?>" class="w-full border p-2 rounded" placeholder="например: shadow-md или оставить пустым">
+            <input type="text" name="shadow" value="<?= htmlspecialchars($theme['shadow']) ?>" class="w-full border p-2 rounded" placeholder="например: shadow-lg или оставить пустым">
         </div>
 
         <div>
-            <label class="block font-semibold mb-1">Максимальная ширина (Tailwind):</label>
-            <input type="text" name="maxWidth" value="<?= htmlspecialchars($theme['maxWidth']) ?>" class="w-full border p-2 rounded" placeholder="например: max-w-7xl, max-w-4xl, max-w-full">
+            <label class="block font-semibold mb-1">Максимальная ширина:</label>
+            <input type="text" name="maxWidth" value="<?= htmlspecialchars($theme['maxWidth']) ?>" class="w-full border p-2 rounded" placeholder="например: max-w-7xl">
         </div>
 
         <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded">💾 Сохранить</button>

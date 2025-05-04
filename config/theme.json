@@ -1,8 +1,7 @@
 {
   "background": "bg-white",
   "accent": "text-indigo-600",
-  "rounded": "rounded-xl",
-  "shadow": "shadow-md",
-  "maxWidth": "max-w-7xl",
-  "glass": true
+  "rounded": false,
+  "shadow": false,
+  "maxWidth": "max-w-7xl"
 }
