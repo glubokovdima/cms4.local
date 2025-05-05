@@ -1,7 +1,7 @@
 {
-  "background": "bg-white",
-  "accent": "text-indigo-600",
-  "rounded": false,
-  "shadow": false,
-  "maxWidth": "max-w-7xl"
+    "background": "",
+    "accent": "",
+    "rounded": "",
+    "shadow": "",
+    "maxWidth": ""
 }

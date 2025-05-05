@@ -1,15 +1,36 @@
 <?php
 
 function loadPages() {
-    return json_decode(file_get_contents(dirname(__DIR__, 2) . '/pages.json'), true);
+    $file = __DIR__ . '/../config/pages.json';
+
+    if (!file_exists($file)) {
+        return []; // если файла нет, возвращаем пустой массив
+    }
+
+    $json = file_get_contents($file);
+    $data = json_decode($json, true);
+
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        die('❌ Ошибка чтения pages.json: ' . json_last_error_msg());
+    }
+
+    return $data;
 }
 
-function savePages($pages) {
-    file_put_contents(dirname(__DIR__, 2) . '/pages.json', json_encode($pages, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+function savePages($pages): bool {
+    $file = __DIR__ . '/../config/pages.json';
+    $json = json_encode($pages, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        error_log('❌ Ошибка при кодировании JSON: ' . json_last_error_msg());
+        return false;
+    }
+
+    return file_put_contents($file, $json) !== false;
 }
 
 function getAvailableForms(): array {
-    $formDir = dirname(__DIR__, 2) . '/blocks/forms';  // ← поправили путь
+    $formDir = __DIR__ . '/../blocks/forms';
     $forms = [];
 
     foreach (glob($formDir . '/*.php') as $file) {
@@ -20,6 +41,17 @@ function getAvailableForms(): array {
     return $forms;
 }
 
+function getAvailableBlocks(): array {
+    $blockDir = __DIR__ . '/../blocks';
+    $blocks = [];
+
+    foreach (glob($blockDir . '/*.php') as $file) {
+        $name = basename($file, '.php');
+        $blocks[$name] = ucfirst(str_replace('-', ' ', $name));
+    }
+
+    return $blocks;
+}
 
 function renderAdminLayout(string $title, callable $callback)
 {
@@ -27,7 +59,6 @@ function renderAdminLayout(string $title, callable $callback)
     $callback(); // собираем HTML страницы
     $content = ob_get_clean();
 
-    // Подключаем layout
     $pageSlug = $_GET['slug'] ?? 'admin';
-    include dirname(__DIR__) . '/layout.php';
+    include __DIR__ . '/layout.php';
 }

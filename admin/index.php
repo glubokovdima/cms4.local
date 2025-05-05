@@ -1,19 +1,28 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
-require_once 'includes/functions.php';
+require_once __DIR__ . '/functions.php';
+
 $pages = loadPages();
 $message = null;
-
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['new_slug'], $_POST['new_title'])) {
     $slug = trim($_POST['new_slug']);
     $title = trim($_POST['new_title']);
 
-    if (!isset($pages[$slug])) {
+    // Простейшая валидация slug (буквы, цифры, дефис, подчёркивание)
+    if (!preg_match('/^[a-z0-9\-_]+$/i', $slug)) {
+        $message = ['type' => 'error', 'text' => 'Недопустимые символы в slug.'];
+    } elseif (!isset($pages[$slug])) {
         $pages[$slug] = ['title' => $title, 'blocks' => []];
-        savePages($pages);
-        header("Location: page.php?slug=$slug");
-        exit;
+        if (savePages($pages)) {
+            header("Location: page.php?slug=" . urlencode($slug));
+            exit;
+        } else {
+            $message = ['type' => 'error', 'text' => 'Ошибка при сохранении данных.'];
+        }
     } else {
         $message = ['type' => 'error', 'text' => 'Страница с таким slug уже существует.'];
     }
@@ -28,7 +37,11 @@ renderAdminLayout('Страницы', function () use ($pages, $message) {
 
     <ul class="list-disc pl-5 mb-6 space-y-1">
         <?php foreach ($pages as $slug => $page): ?>
-            <li><a href="page.php?slug=<?= $slug ?>" class="text-blue-600 hover:underline"><?= htmlspecialchars($page['title']) ?></a></li>
+            <li>
+                <a href="page.php?slug=<?= urlencode($slug) ?>" class="text-blue-600 hover:underline">
+                    <?= htmlspecialchars($page['title']) ?>
+                </a>
+            </li>
         <?php endforeach; ?>
     </ul>
 

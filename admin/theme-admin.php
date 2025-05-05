@@ -1,7 +1,15 @@
 <?php
-require_once 'includes/functions.php';
+require_once __DIR__ . '/functions.php';
 
-$themePath = dirname(__DIR__) . '/theme.json';
+$themePath = dirname(__DIR__) . '/config/theme.json';
+
+function saveTheme(array $data, string $path): bool {
+    $json = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        return false;
+    }
+    return file_put_contents($path, $json) !== false;
+}
 
 $theme = file_exists($themePath)
     ? json_decode(file_get_contents($themePath), true)
@@ -13,6 +21,8 @@ $theme = file_exists($themePath)
         'maxWidth' => 'max-w-7xl'
     ];
 
+$message = null;
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $theme = [
         'background' => trim($_POST['background'] ?? ''),
@@ -22,14 +32,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'maxWidth' => trim($_POST['maxWidth'] ?? '')
     ];
 
-    file_put_contents($themePath, json_encode($theme, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
-    $message = '✔ Настройки темы сохранены!';
+    if (saveTheme($theme, $themePath)) {
+        $message = '✔ Настройки темы сохранены!';
+    } else {
+        $message = '❌ Ошибка при сохранении темы';
+    }
 }
 
 renderAdminLayout('Настройки темы (ручной ввод)', function () use ($theme, $message) {
     ?>
     <?php if (!empty($message)): ?>
-        <div class="mb-4 p-3 bg-green-500 text-white rounded"><?= $message ?></div>
+        <div class="mb-4 p-3 <?= str_starts_with($message, '✔') ? 'bg-green-500' : 'bg-red-500' ?> text-white rounded">
+            <?= htmlspecialchars($message) ?>
+        </div>
     <?php endif; ?>
 
     <form method="post" class="space-y-6 max-w-xl">

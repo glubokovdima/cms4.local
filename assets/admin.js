@@ -1,15 +1,14 @@
 let blockIndex = $('#blocks-container .block-item').length;
 
 // Добавление нового блока
-$('#add-block').off('click').on('click', function () {
+$('#add-block').on('click', function () {
     const type = $('#block-type').val();
-    if (!type) return alert('Выберите тип блока');
+    if (!type) return;
 
-    $.post('includes/ajax-render-block.php', { type, index: blockIndex }, function (html) {
+    $.post('block-loader.php', { type }, function (html) {
         $('#blocks-container').append(html);
         blockIndex++;
         updateConditionalFields();
-        bindRepeaterLogic();
     });
 });
 
@@ -18,71 +17,61 @@ $(document).on('click', '.delete-block', function () {
     $(this).closest('.block-item').remove();
 });
 
-// Условные поля
+// Условные поля (showIf)
 function updateConditionalFields() {
-    $('.field-group[data-show-if]').each(function () {
-        const cond = $(this).data('show-if');
-        let show = true;
-        for (const field in cond) {
-            const val = $(`[name$="[${field}]"]`).val();
-            if (val !== cond[field]) show = false;
+    $('[data-show-if]').each(function () {
+        const $wrapper = $(this);
+        const condition = $wrapper.data('show-if');
+
+        let visible = true;
+        for (const field in condition) {
+            const expected = condition[field];
+            const $target = $(`[name*='[${field}]']`);
+            const actual = $target.val();
+            if (actual !== expected) {
+                visible = false;
+                break;
+            }
         }
-        $(this).toggle(show);
+
+        $wrapper.toggle(visible);
     });
 }
 $(document).on('change', 'select, input', updateConditionalFields);
 $(document).ready(updateConditionalFields);
 
-// Repeater
-function bindRepeaterLogic() {
-    $('.repeater').each(function () {
-        const repeater = $(this);
-        const name = repeater.data('name');
-        const template = repeater.find('.repeater-item').first().clone();
+// Repeater логика
+$(document).on('click', '.add-repeater-item', function () {
+    const $repeater = $(this).closest('.repeater');
+    const name = $repeater.data('name');
+    const index = $repeater.find('.repeater-item').length;
+    const templateHtml = $repeater.find('template.repeater-template').html();
 
-        repeater.find('.add-repeater-item').off().on('click', function () {
-            const index = repeater.find('.repeater-item').length;
-            const newItem = template.clone();
+    const html = templateHtml
+        .replaceAll('__NAME__', name)
+        .replaceAll('%INDEX%', index);
 
-            newItem.find('input, select, textarea').each(function () {
-                const oldName = $(this).attr('name');
-                const newName = oldName.replace(/\[\d+]/g, `[${index}]`);
-                $(this).attr('name', newName).val('');
-            });
+    $(html).insertBefore($(this));
+    updateConditionalFields();
+});
 
-            newItem.appendTo(repeater.find('.add-repeater-item').parent());
-        });
+$(document).on('click', '.delete-repeater-item', function () {
+    $(this).closest('.repeater-item').remove();
+});
 
-        repeater.on('click', '.remove-repeater-item', function () {
-            $(this).closest('.repeater-item').remove();
-        });
-    });
-}
-$(document).ready(bindRepeaterLogic);
 
-// Загрузка изображений
+// ===== Загрузка изображений =====
+
+// Новая картинка
 $(document).on('change', '.upload-image-input', function () {
     const wrapper = $(this).closest('.image-uploader');
     const input = wrapper.find('input[type=hidden]');
     const file = this.files[0];
 
-    const formData = new FormData();
-    formData.append('file', file);
-
-    $.ajax({
-        url: 'includes/upload.php',
-        type: 'POST',
-        data: formData,
-        contentType: false,
-        processData: false,
-        success(res) {
-            const data = JSON.parse(res);
-            if (data.success) {
-                input.val(data.file);
-                wrapper.find('img.preview').remove();
-                wrapper.prepend(`<img src="${data.file}" class="h-20 preview mb-2">`);
-            }
-        }
+    uploadImage(file, (url) => {
+        input.val(url);
+        wrapper.find('img.preview').remove();
+        wrapper.prepend(`<img src="${url}" class="h-20 preview mb-2">`);
     });
 });
 
@@ -91,7 +80,6 @@ $(document).on('click', '.replace-image', function () {
     const wrapper = $(this).closest('.image-uploader');
     const input = wrapper.find('input[type=hidden]');
     const uploader = $('<input type="file" accept="image/*" style="display:none">');
-
     $('body').append(uploader);
 
     uploader.on('change', function () {

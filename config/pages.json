@@ -5,16 +5,28 @@
             {
                 "type": "hero-1",
                 "data": {
-                    "heading": "123",
-                    "description": "1312",
-                    "button_text": "123",
-                    "button_url": "321",
+                    "heading": "123123",
+                    "description": "23132",
+                    "background_type": "svg",
                     "background_svg": "",
-                    "sub_button_text": "",
-                    "sub_button_url": ""
+                    "background_color": "",
+                    "background_image": "",
+                    "buttons": [
+                        {
+                            "text": "1111",
+                            "url": "2",
+                            "accent": "primary"
+                        },
+                        {
+                            "text": "12312",
+                            "url": "",
+                            "accent": "secondary"
+                        }
+                    ]
                 }
             }
-        ]
+        ],
+        "template": "layout"
     },
     "catalog": {
         "title": "Каталог товаров",

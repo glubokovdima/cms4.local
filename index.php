@@ -3,7 +3,7 @@
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-$pagesFile = 'pages.json';
+$pagesFile = __DIR__ . '/config/pages.json';
 $pages = json_decode(file_get_contents($pagesFile), true);
 if (json_last_error() !== JSON_ERROR_NONE) {
     die('Ошибка JSON: ' . json_last_error_msg());
@@ -48,7 +48,7 @@ $title = $page['title'] ?? 'Без названия';
 $blocks = $page['blocks'] ?? [];
 $pageSlug = $slug;
 
-include 'layout.php';
+include __DIR__ . '/templates/layout.php';
 exit;
 
 // === Функции ===
