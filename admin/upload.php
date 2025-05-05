@@ -1,5 +1,5 @@
 <?php
-$uploadDir = dirname(__DIR__, 2) . '/uploads/';
+'file' => 'assets/uploads/' . $filename,
 if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
 
 $allowedExt = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'];

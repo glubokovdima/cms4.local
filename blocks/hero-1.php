@@ -31,8 +31,8 @@ return [
         ],
         [
             'name' => 'background_image',
-            'type' => 'text',
-            'label' => 'URL фонового изображения',
+            'type' => 'image',
+            'label' => 'Фоновое изображение',
             'showIf' => ['background_type' => 'image']
         ],
 

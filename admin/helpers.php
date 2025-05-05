@@ -38,7 +38,7 @@ function renderFields(string $prefix, array $fields, array $data = []): void
                 break;
 
             case 'image':
-                echo "<input type='text' name='{$fullName}' value='" . htmlspecialchars($value) . "' class='w-full border px-2 py-1 rounded'>";
+                echo renderImageField($fullName, $value, $label);
                 break;
 
             case 'repeater':
@@ -67,9 +67,36 @@ function renderFields(string $prefix, array $fields, array $data = []): void
                 echo "</div>";
                 break;
 
-            // TODO: добавить другие типы, если нужно
+            // другие типы можно добавить здесь
         }
 
         echo "</div>"; // .field-wrapper
     }
+}
+
+
+function renderImageField($name, $value = '', $label = 'Изображение')
+{
+    $preview = '';
+    if ($value) {
+        $preview = (str_starts_with($value, '/uploads/') || str_starts_with($value, 'http'))
+            ? $value
+            : '/uploads/' . ltrim($value, '/');
+    }
+
+    $imgTag = $preview
+        ? '<img src="' . $preview . '" class="image-preview w-32 h-32 object-cover border mb-2 rounded">'
+        : '<div class="image-preview w-32 h-32 border flex items-center justify-center text-gray-400 mb-2">Нет изображения</div>';
+
+    return '
+    <div class="image-field">
+        <label>' . $label . '</label><br>
+        <div class="image-preview-wrapper">' . $imgTag . '</div>
+        <input type="hidden" name="' . $name . '" value="' . htmlspecialchars($value) . '" class="image-input">
+        <div class="flex gap-2">
+            <button type="button" class="upload-btn px-3 py-1 bg-blue-500 text-white rounded text-sm" data-input-name="' . $name . '">Загрузить</button>
+            <button type="button" class="choose-btn px-3 py-1 bg-gray-500 text-white rounded text-sm" data-input-name="' . $name . '">Выбрать</button>
+            <button type="button" class="remove-btn px-3 py-1 bg-red-500 text-white rounded text-sm" data-input-name="' . $name . '">Удалить</button>
+        </div>
+    </div>';
 }
